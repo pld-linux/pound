@@ -5,7 +5,7 @@ Version:	1.2
 Release:	1
 License:	GPL
 Group:		Networking/Daemons
-Vendor:		Robert Segall - roseg@apsis.ch
+Vendor:		Robert Segall <roseg@apsis.ch>
 Source0:	http://www.apsis.ch/pound/Pound-%{version}.tgz
 Source1:	%{name}.cfg
 Source2:	%{name}.init
