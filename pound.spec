@@ -1,15 +1,14 @@
 Summary:	Pound - reverse-proxy and load-balancer
 Summary(pl):	Pound - reverse-proxy i load-balancer
 Name:		pound
-Version:	0.7
-Release:	2
+Version:	0.8
+Release:	1
 License:	GPL
 Group:		Networking/Daemons
 Vendor:		Robert Segall - roseg@apsis.ch
 Source0:	http://www.apsis.ch/pound/Pound-%{version}.tgz
 Source1:	%{name}.cfg
 Source2:	%{name}.init
-Patch0:		%{name}-getregexp.patch
 URL:		http://www.apsis.ch/pound/
 BuildRequires:	openssl-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -32,7 +31,6 @@ swobodnego u¿ywania, kopiowania i rozdawania.
 
 %prep
 %setup -q -n pound
-%patch0 -p0
 
 %build
 %{__make} F_CONF=%{_sysconfdir}/pound/pound.cfg
