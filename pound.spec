@@ -1,7 +1,7 @@
 Summary:	Pound - reverse-proxy and load-balancer
 Summary(pl):	Pound - reverse-proxy i load-balancer
 Name:		pound
-Version:	0.11
+Version:	1.0
 Release:	1
 License:	GPL
 Group:		Networking/Daemons
