@@ -11,7 +11,7 @@ Source1:	%{name}.cfg
 Source2:	%{name}.init
 Patch0:		pound-getregexp.patch
 URL:		http://www.apsis.ch/pound/
-BuildRequires:	openssl
+BuildRequires:	openssl-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
