@@ -36,6 +36,7 @@ swobodnego u¿ywania, kopiowania i rozdawania.
 %setup -q -n Pound-%{version}
 
 %build
+cp -f %{_datadir}/libtool/config.sub .
 %configure
 
 %{__make} \
