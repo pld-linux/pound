@@ -11,6 +11,7 @@ Source0:	http://www.apsis.ch/pound/Pound-%{version}.tgz
 Source1:	%{name}.cfg
 Source2:	%{name}.init
 URL:		http://www.apsis.ch/pound/
+BuildRequires:	libtool
 BuildRequires:	openssl-devel >= 0.9.7d
 PreReq:		rc-scripts
 Requires(post,preun):	/sbin/chkconfig
