@@ -1,0 +1,17 @@
+--- pound.c.org	Tue Jul 23 05:11:27 2002
++++ pound.c	Tue Jul 23 14:19:28 2002
+@@ -168,12 +168,12 @@
+     config_parse(argc, argv);
+ 
+     /* prepare regular expressions */
+-    if(regcomp(&GET, "^GET ([A-Za-z0-9/._$?&=%+:-]+) HTTP/1.[01]$", REG_ICASE | REG_NEWLINE | REG_EXTENDED)
+-    || regcomp(&POST, "^POST ([A-Za-z0-9/._$?&=%+:-]+) HTTP/1.[01]$", REG_ICASE | REG_NEWLINE | REG_EXTENDED)
+-    || regcomp(&HEAD, "^HEAD ([A-Za-z0-9/._$?&=%+:-]+) HTTP/1.[01]$", REG_ICASE | REG_NEWLINE | REG_EXTENDED)
+-    || regcomp(&PUT, "^PUT ([A-Za-z0-9/._$?&=%+:-]+) HTTP/1.[01]$", REG_ICASE | REG_NEWLINE | REG_EXTENDED)
++    if(regcomp(&GET, "^GET ([A-Za-z0-9/._$?&;=%+:-]+) HTTP/1.[01]$", REG_ICASE | REG_NEWLINE | REG_EXTENDED)
++    || regcomp(&POST, "^POST ([A-Za-z0-9/._$?&;=%+:-]+) HTTP/1.[01]$", REG_ICASE | REG_NEWLINE | REG_EXTENDED)
++    || regcomp(&HEAD, "^HEAD ([A-Za-z0-9/._$?&;=%+:-]+) HTTP/1.[01]$", REG_ICASE | REG_NEWLINE | REG_EXTENDED)
++    || regcomp(&PUT, "^PUT ([A-Za-z0-9/._$?&;=%+:-]+) HTTP/1.[01]$", REG_ICASE | REG_NEWLINE | REG_EXTENDED)
+     || regcomp(&DELETE, "^DELETE ([A-Za-z0-9/._$?&=%+:-]+) HTTP/1.[01]$", REG_ICASE | REG_NEWLINE | REG_EXTENDED)
+     || regcomp(&HEADER, "^[A-Za-z][A-Za-z0-9-]*:.*$", REG_ICASE | REG_NEWLINE | REG_EXTENDED)
+     || regcomp(&CHUNKED, "^Transfer-encoding: chunked$", REG_ICASE | REG_NEWLINE | REG_EXTENDED)
