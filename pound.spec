@@ -22,6 +22,14 @@ convenient SSL wrapper for those Web servers that do not offer it
 natively. Pound is distributed under the GPL - no warranty, it's free
 to use, copy and give away.
 
+%description -l pl
+Program Pound jest odwrotnym proxy, load-balancerem i interfejsem
+HTTPS do serwera(ów) WWW. Pount zosta³ stworzony by pozwoliæ na
+rozdzielenie obci±¿enia na kilka serwerów WWW i pozwoliæ na wygodne
+opakowanie SSL-em tych serwerów, które same nie obs³uguj± SSL. Pound
+jest rozpowszechniany na licencji GPL - bez gwarancji, z mo¿liwo¶ci±
+swobodnego u¿ywania, kopiowania i rozdawania.
+
 %prep
 %setup -q -n pound
 %patch0 -p0
