@@ -11,7 +11,7 @@ Source0:	http://www.apsis.ch/pound/Pound-%{version}.tgz
 Source1:	%{name}.cfg
 Source2:	%{name}.init
 URL:		http://www.apsis.ch/pound/
-BuildRequires:	openssl-devel >= 0.9.7cc
+BuildRequires:	openssl-devel >= 0.9.7c
 PreReq:		rc-scripts
 Requires(post,preun):	/sbin/chkconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
