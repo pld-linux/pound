@@ -12,6 +12,8 @@ Source1:	%{name}.cfg
 Source2:	%{name}.init
 URL:		http://www.apsis.ch/pound/
 BuildRequires:	openssl-devel >= 0.9.7b
+PreReq:		rc-scripts
+Requires(post,preun):	/sbin/chkconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -34,17 +36,22 @@ swobodnego u¿ywania, kopiowania i rozdawania.
 %setup -q -n Pound-%{version}
 
 %build
-%{configure}
-%{__make} F_CONF=%{_sysconfdir}/pound/pound.cfg
+%configure
+
+%{__make} \
+	F_CONF=%{_sysconfdir}/pound/pound.cfg
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_bindir},%{_mandir}/man8,%{_sysconfdir}/{pound/,rc.d/init.d}}
+install -d $RPM_BUILD_ROOT{%{_bindir},%{_mandir}/man8,%{_sysconfdir}/pound,/etc/rc.d/init.d}
 
 install pound 	$RPM_BUILD_ROOT%{_bindir}
-install pound.8 $RPM_BUILD_ROOT%{_mandir}/man8/
-install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/pound/
+install pound.8 $RPM_BUILD_ROOT%{_mandir}/man8
+install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/pound
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
+
+%clean
+rm -rf $RPM_BUILD_ROOT
 
 %post
 /sbin/chkconfig --add %{name}
@@ -59,9 +66,6 @@ if [ "$1" = "0" -a -f %{_var}/lock/subsys/%{name} ]; then
         /etc/rc.d/init.d/%{name} stop 1>&2
 fi
 /sbin/chkconfig --del %{name}
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
