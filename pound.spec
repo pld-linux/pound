@@ -9,7 +9,7 @@ Vendor:		Robert Segall - roseg@apsis.ch
 Source0:	http://www.apsis.ch/pound/Pound-%{version}.tgz
 Source1:	%{name}.cfg
 Source2:	%{name}.init
-Patch0:		pound-getregexp.patch
+Patch0:		%{name}-getregexp.patch
 URL:		http://www.apsis.ch/pound/
 BuildRequires:	openssl-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -42,7 +42,7 @@ install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/%{name}
 /sbin/chkconfig --add %{name}
 if [ -f %{_var}/lock/subsys/%{name} ]; then
         %{_sysconfdir}/rc.d/init.d/%{name} restart 1>&2
-else    
+else
         echo "Run \"%{_sysconfdir}/rc.d/init.d/%{name} start\" to start %{name} daemon."
 fi
 
@@ -59,7 +59,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc README
 %attr(755,root,root) %{_bindir}/*
-%attr(644,root,root) %{_mandir}/man8/*
-%attr( 644,root,root) %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/pound/*
+%dir %{_sysconfdir}/pound
+%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/pound/*
 %attr(754,root,root) %{_sysconfdir}/rc.d/init.d/%{name}
-%dir %{_sysconfdir}/pound/
+%{_mandir}/man8/*
