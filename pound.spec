@@ -43,19 +43,19 @@ install -d $RPM_BUILD_ROOT{%{_bindir},%{_mandir}/man8,%{_sysconfdir}/{pound/,rc.
 install pound 	$RPM_BUILD_ROOT%{_bindir}
 install pound.8 $RPM_BUILD_ROOT%{_mandir}/man8/
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/pound/
-install %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/%{name}
+install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 
 %post
 /sbin/chkconfig --add %{name}
 if [ -f %{_var}/lock/subsys/%{name} ]; then
-        %{_sysconfdir}/rc.d/init.d/%{name} restart 1>&2
+        /etc/rc.d/init.d/%{name} restart 1>&2
 else
-        echo "Run \"%{_sysconfdir}/rc.d/init.d/%{name} start\" to start %{name} daemon."
+        echo "Run \"/etc/rc.d/init.d/%{name} start\" to start %{name} daemon."
 fi
 
 %preun
 if [ "$1" = "0" -a -f %{_var}/lock/subsys/%{name} ]; then
-        %{_sysconfdir}/rc.d/init.d/%{name} stop 1>&2
+        /etc/rc.d/init.d/%{name} stop 1>&2
 fi
 /sbin/chkconfig --del %{name}
 
@@ -68,5 +68,5 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/*
 %dir %{_sysconfdir}/pound
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/pound/*
-%attr(754,root,root) %{_sysconfdir}/rc.d/init.d/%{name}
+%attr(754,root,root) /etc/rc.d/init.d/%{name}
 %{_mandir}/man8/*
