@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# pound	
+# pound
 #
 # chkconfig:	345 85 15
 # description:	reverse-proxy and load-balancer
