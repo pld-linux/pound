@@ -13,8 +13,8 @@ Source2:	%{name}.init
 URL:		http://www.apsis.ch/pound/
 BuildRequires:	libtool
 BuildRequires:	openssl-devel >= 0.9.7d
-PreReq:		rc-scripts
 Requires(post,preun):	/sbin/chkconfig
+Requires:	rc-scripts
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -74,6 +74,6 @@ fi
 %doc README
 %attr(755,root,root) %{_bindir}/*
 %dir %{_sysconfdir}/pound
-%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/pound/*
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pound/*
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 %{_mandir}/man8/*
