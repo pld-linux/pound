@@ -1,13 +1,13 @@
 Summary:	Pound - reverse-proxy and load-balancer
 Summary(pl):	Pound - reverse-proxy i load-balancer
 Name:		pound
-Version:	1.9.4
+Version:	1.9.5
 Release:	1
 License:	GPL
 Group:		Networking/Daemons
 Vendor:		Robert Segall <roseg@apsis.ch>
 Source0:	http://www.apsis.ch/pound/Pound-%{version}.tgz
-# Source0-md5:	5884eda555218579e76e862a206fe898
+# Source0-md5:	6db10b610a0d0b64dd05828fccff55db
 Source1:	%{name}.cfg
 Source2:	%{name}.init
 URL:		http://www.apsis.ch/pound/
