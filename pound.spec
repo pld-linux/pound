@@ -41,6 +41,7 @@ cp -f %{_datadir}/libtool/config.sub .
 %configure
 
 %{__make} \
+	CC="%{__cc}" \
 	F_CONF=%{_sysconfdir}/pound/pound.cfg
 
 %install
