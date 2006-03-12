@@ -5,7 +5,6 @@ Version:	1.10
 Release:	2
 License:	GPL
 Group:		Networking/Daemons
-Vendor:		Robert Segall <roseg@apsis.ch>
 Source0:	http://www.apsis.ch/pound/Pound-%{version}.tgz
 # Source0-md5:	5792fd804907cc617e37607c6783d5f7
 Source1:	%{name}.cfg
@@ -13,6 +12,7 @@ Source2:	%{name}.init
 URL:		http://www.apsis.ch/pound/
 BuildRequires:	libtool
 BuildRequires:	openssl-devel >= 0.9.7d
+BuildRequires:	rpmbuild(macros) >= 1.268
 Requires(post,preun):	/sbin/chkconfig
 Requires:	rc-scripts
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
