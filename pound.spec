@@ -10,9 +10,9 @@ Source0:	http://www.apsis.ch/pound/Pound-%{version}.tgz
 Source1:	%{name}.cfg
 Source2:	%{name}.init
 URL:		http://www.apsis.ch/pound/
-BuildRequires:	libtool
-BuildRequires:	pcre-devel
+BuildRequires:	automake
 BuildRequires:	openssl-devel >= 0.9.7d
+BuildRequires:	pcre-devel
 BuildRequires:	rpmbuild(macros) >= 1.268
 Requires(post,preun):	/sbin/chkconfig
 Requires:	rc-scripts
@@ -38,7 +38,7 @@ swobodnego u¿ywania, kopiowania i rozdawania.
 %setup -q -n Pound-%{version}
 
 %build
-cp -f %{_datadir}/libtool/config.sub .
+cp -f /usr/share/automake/config.sub .
 %configure
 
 %{__make} \
