@@ -1,12 +1,12 @@
 Summary:	Pound - reverse-proxy and load-balancer
 Summary(pl):	Pound - reverse-proxy i load-balancer
 Name:		pound
-Version:	2.1
+Version:	2.2
 Release:	1
 License:	GPL
 Group:		Networking/Daemons
 Source0:	http://www.apsis.ch/pound/Pound-%{version}.tgz
-# Source0-md5:	d51fefbaef369c94b87785400e52120f
+# Source0-md5:	a94e781ced1b2f3a7f8b8051f4d95713
 Source1:	%{name}.cfg
 Source2:	%{name}.init
 URL:		http://www.apsis.ch/pound/
@@ -47,10 +47,12 @@ cp -f /usr/share/automake/config.sub .
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_bindir},%{_mandir}/man8,%{_sysconfdir}/pound,/etc/rc.d/init.d}
+install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man8,%{_sysconfdir}/pound,/etc/rc.d/init.d}
 
-install pound 	$RPM_BUILD_ROOT%{_bindir}
-install pound.8 $RPM_BUILD_ROOT%{_mandir}/man8
+install pound    $RPM_BUILD_ROOT%{_sbindir}
+install poundctl $RPM_BUILD_ROOT%{_sbindir}
+install pound.8  $RPM_BUILD_ROOT%{_mandir}/man8
+install poundctl.8 $RPM_BUILD_ROOT%{_mandir}/man8
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/pound
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 
@@ -70,7 +72,7 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc README
-%attr(755,root,root) %{_bindir}/*
+%attr(755,root,root) %{_sbindir}/*
 %dir %{_sysconfdir}/pound
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pound/*
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
