@@ -1,5 +1,5 @@
 Summary:	Pound - reverse-proxy and load-balancer
-Summary(pl):	Pound - reverse-proxy i load-balancer
+Summary(pl.UTF-8):   Pound - reverse-proxy i load-balancer
 Name:		pound
 Version:	2.2
 Release:	1
@@ -26,13 +26,13 @@ convenient SSL wrapper for those Web servers that do not offer it
 natively. Pound is distributed under the GPL - no warranty, it's free
 to use, copy and give away.
 
-%description -l pl
+%description -l pl.UTF-8
 Program Pound jest odwrotnym proxy, load-balancerem i interfejsem
-HTTPS do serwera(ów) WWW. Pount zosta³ stworzony by pozwoliæ na
-rozdzielenie obci±¿enia na kilka serwerów WWW i pozwoliæ na wygodne
-opakowanie SSL-em tych serwerów, które same nie obs³uguj± SSL. Pound
-jest rozpowszechniany na licencji GPL - bez gwarancji, z mo¿liwo¶ci±
-swobodnego u¿ywania, kopiowania i rozdawania.
+HTTPS do serwera(Ã³w) WWW. Pount zostaÅ‚ stworzony by pozwoliÄ‡ na
+rozdzielenie obciÄ…Å¼enia na kilka serwerÃ³w WWW i pozwoliÄ‡ na wygodne
+opakowanie SSL-em tych serwerÃ³w, ktÃ³re same nie obsÅ‚ugujÄ… SSL. Pound
+jest rozpowszechniany na licencji GPL - bez gwarancji, z moÅ¼liwoÅ›ciÄ…
+swobodnego uÅ¼ywania, kopiowania i rozdawania.
 
 %prep
 %setup -q -n Pound-%{version}
