@@ -1,5 +1,5 @@
 Summary:	Pound - reverse-proxy and load-balancer
-Summary(pl.UTF-8):   Pound - reverse-proxy i load-balancer
+Summary(pl.UTF-8):	Pound - reverse-proxy i load-balancer
 Name:		pound
 Version:	2.2
 Release:	1
