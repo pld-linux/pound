@@ -39,7 +39,7 @@ is_up() {
 }
 
 start() {
-	local ret
+	local ret started=0
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/pound -o "$single" = 1 ]; then
 		for instance in $POUND_INSTANCES; do
@@ -47,9 +47,12 @@ start() {
 			msg_starting "Pound ($instance)"
 			daemon pound -f /etc/pound/$instance.cfg -p /var/run/pound/$instance.pid
 			ret=$?
-			[ $RETVAL -eq 0 ] && RETVAL=$ret
+			if [ $RETVAL -eq 0 ]; then
+			   	RETVAL=$ret
+				started=1
+			fi
 		done
-		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/pound
+		[ $started = 1 ] && touch /var/lock/subsys/pound
 
 		if [ -z "$ret" -a "$single" = 1 ]; then
 			msg_already_running "Pound ($instance)"
