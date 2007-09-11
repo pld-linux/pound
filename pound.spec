@@ -48,7 +48,7 @@ cp -f /usr/share/automake/config.sub .
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man8,%{_sysconfdir}/pound,/var/run/%{name},/etc/rc.d/init.d}
+install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man8,%{_sysconfdir}/pound,/var/run/%{name},/etc/{sysconfig,rc.d/init.d}}
 
 install pound    $RPM_BUILD_ROOT%{_sbindir}
 install poundctl $RPM_BUILD_ROOT%{_sbindir}
