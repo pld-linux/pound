@@ -8,3 +8,4 @@
 # Sep  5 11:01:36 pyxis pound: MONITOR: worker exited on signal 6, restarting...
 # See "pound FAQ, question 2.7 (NTPL)" for more details.
 #export LD_ASSUME_KERNEL=2.4.19
+# (note: it applies to glibc 2.3.x only, since 2.4 NPTL is the only option)
