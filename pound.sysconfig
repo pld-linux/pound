@@ -4,7 +4,7 @@
 #POUND_INSTANCES="pound"
 
 # Due some glibc threading problems you might need to enable this.
-# Sep  5 10:57:03 pyxis pound: libgcc_s.so.1 must be installed for pthread_cancel to work 
-# Sep  5 13:57:03 pyxis pound: MONITOR: worker exited on signal 6, restarting... 
+# Sep  5 11:01:36 pyxis pound: libgcc_s.so.1 must be installed for pthread_cancel to work
+# Sep  5 11:01:36 pyxis pound: MONITOR: worker exited on signal 6, restarting...
 # See "pound FAQ, question 2.7 (NTPL)" for more details.
 #export LD_ASSUME_KERNEL=2.4.19
