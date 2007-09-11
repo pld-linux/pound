@@ -81,6 +81,21 @@ stop() {
 	fi
 }
 
+restart() {
+	if [ "$single" != 1 ]; then
+		# make up list of configured and up instances
+		local list
+		for instance in $POUND_INSTANCES; do
+			is_up $instance || continue
+			list="$list $instance"
+		done
+		POUND_INSTANCES=$list
+	fi
+
+	stop
+	start
+}
+
 if [ "$1" != status -a "$2" ]; then
 	POUND_INSTANCES="$2"
 	single=1
@@ -111,8 +126,7 @@ case "$1" in
 	exit $stat
 	;;
   restart|force-reload)
-	stop
-	start
+	restart
 	;;
   *)
 	msg_usage "$0 {start|stop|restart|force-reload|status} [INSTANCE NAMES]"
