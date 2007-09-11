@@ -28,32 +28,60 @@ else
 	exit 0
 fi
 
+# check if the $1 instance is up
+is_up() {
+	local instance="$1"
+	local pidfile=/var/run/pound/$instance.pid
+	[ -f $pidfile ] || return 1
+	local pid=$(cat $pidfile)
+	kill -0 $pid 2>/dev/null
+	return $?
+}
+
 start() {
-	for instance in $POUND_INSTANCES; do
-		# Check if the service is already running?
-		if [ ! -f /var/lock/subsys/pound-$instance ]; then
+	local ret
+	# Check if the service is already running?
+	if [ ! -f /var/lock/subsys/pound -o "$single" = 1 ]; then
+		for instance in $POUND_INSTANCES; do
+			is_up $instance && continue
 			msg_starting "Pound ($instance)"
 			daemon pound -f /etc/pound/$instance.cfg -p /var/run/pound/$instance.pid
-			RETVAL=$?
-			[ $RETVAL -eq 0 ] && touch /var/lock/subsys/pound-$instance
-		else
+			ret=$?
+			[ $RETVAL -eq 0 ] && RETVAL=$ret
+		done
+		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/pound
+
+		if [ -z "$ret" -a "$single" = 1 ]; then
 			msg_already_running "Pound ($instance)"
 		fi
-	done
+	else
+		msg_already_running "Pound"
+	fi
 }
 
 stop() {
+	local ret
 	# Stop daemons.
-	for instance in $POUND_INSTANCES; do
-		if [ -f /var/lock/subsys/pound-$instance ]; then
+	if [ -f /var/lock/subsys/pound ]; then
+		for instance in $POUND_INSTANCES; do
+			is_up $instance || continue
 			msg_stopping "Pound ($instance)"
-			killproc --pidfile pound/$instance.pid pound 
-			rm -f /var/lock/subsys/pound-$instance > /dev/null 2>&1
-		else
+			killproc --pidfile pound/$instance.pid pound
+			ret=$?
+		done
+		[ "$single" != 1 ] && rm -f /var/lock/subsys/pound > /dev/null 2>&1
+		if [ -z "$ret" -a "$single" = 1 ]; then
 			msg_not_running "Pound ($instance)"
 		fi
-	done
+	else
+		msg_not_running "Pound"
+	fi
 }
+
+if [ "$1" != status -a "$2" ]; then
+	POUND_INSTANCES="$2"
+	single=1
+fi
 
 RETVAL=0
 # See how we were called.
@@ -65,15 +93,26 @@ case "$1" in
   	stop
 	;;
   status)
-	status pound
-	exit $?
+	nls "Configured Pound instances:"
+   	echo " $POUND_INSTANCES"
+	nls "Currently active Pound instances:"
+	stat=1
+	for pidfile in /var/run/pound/*.pid; do
+		[ -f "$pidfile" ] || continue
+		instance=${pidfile#/var/run/pound/}
+		instance=${instance%.pid}
+		is_up $instance && echo -n " $instance($(cat $pidfile))"
+		stat=0
+	done
+	echo ""
+	exit $stat
 	;;
   restart|force-reload)
 	stop
 	start
 	;;
   *)
-	msg_usage "$0 {start|stop|restart|force-reload|status}"
+	msg_usage "$0 {start|stop|restart|force-reload|status} [INSTANCE NAMES]"
 	exit 3
 esac
 
