@@ -12,6 +12,9 @@
 # Get network config
 . /etc/sysconfig/network
 
+# List of instances to start.
+POUND_INSTANCES="pound"
+
 # Get service config
 [ -f /etc/sysconfig/pound ] && . /etc/sysconfig/pound
 
@@ -26,26 +29,30 @@ else
 fi
 
 start() {
-	# Check if the service is already running?
-	if [ ! -f /var/lock/subsys/pound ]; then
-		msg_starting pound
-		daemon pound -f /etc/pound/pound.cfg
-		RETVAL=$?
-		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/pound
-	else
-		msg_already_running pound
-	fi
+	for instance in $POUND_INSTANCES; do
+		# Check if the service is already running?
+		if [ ! -f /var/lock/subsys/pound-$instance ]; then
+			msg_starting "Pound ($instance)"
+			daemon pound -f /etc/pound/$instance.cfg -p /var/run/pound/$instance.pid
+			RETVAL=$?
+			[ $RETVAL -eq 0 ] && touch /var/lock/subsys/pound-$instance
+		else
+			msg_already_running "Pound ($instance)"
+		fi
+	done
 }
 
 stop() {
 	# Stop daemons.
-	if [ -f /var/lock/subsys/pound ]; then
-		msg_stopping pound
-		killproc pound
-		rm -f /var/lock/subsys/pound > /dev/null 2>&1
-	else
-		msg_not_running pound
-	fi
+	for instance in $POUND_INSTANCES; do
+		if [ -f /var/lock/subsys/pound-$instance ]; then
+			msg_stopping "Pound ($instance)"
+			killproc --pidfile pound/$instance.pid pound 
+			rm -f /var/lock/subsys/pound-$instance > /dev/null 2>&1
+		else
+			msg_not_running "Pound ($instance)"
+		fi
+	done
 }
 
 RETVAL=0

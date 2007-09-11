@@ -1,0 +1,4 @@
+# Customized settings for Pound
+
+# List of instances to start. Configs are searched /etc/pound/$INSTANCE.cfg
+#POUND_INSTANCES="pound"
