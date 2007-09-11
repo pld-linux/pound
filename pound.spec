@@ -2,13 +2,14 @@ Summary:	Pound - reverse-proxy and load-balancer
 Summary(pl.UTF-8):	Pound - reverse-proxy i load-balancer
 Name:		pound
 Version:	2.3.2
-Release:	2
+Release:	3
 License:	GPL
 Group:		Networking/Daemons
 Source0:	http://www.apsis.ch/pound/Pound-%{version}.tgz
 # Source0-md5:	bbb9f1f7dee2fe9713f6cc11c72f97f4
 Source1:	%{name}.cfg
 Source2:	%{name}.init
+Source3:	%{name}.sysconfig
 URL:		http://www.apsis.ch/pound/
 BuildRequires:	automake
 BuildRequires:	openssl-devel >= 0.9.7d
@@ -55,6 +56,7 @@ install pound.8  $RPM_BUILD_ROOT%{_mandir}/man8
 install poundctl.8 $RPM_BUILD_ROOT%{_mandir}/man8
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
+install %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -75,6 +77,7 @@ fi
 %attr(755,root,root) %{_sbindir}/*
 %dir %{_sysconfdir}/pound
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pound/*
+%config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/%{name}
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 %{_mandir}/man8/*
 %dir %attr(755,root,root) /var/run/%{name}
