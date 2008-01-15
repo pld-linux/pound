@@ -45,7 +45,7 @@ start() {
 		for instance in $POUND_INSTANCES; do
 			is_up $instance && continue
 			msg_starting "Pound ($instance)"
-			daemon pound -f /etc/pound/$instance.cfg -p /var/run/pound/$instance.pid
+			daemon /usr/sbin/pound -v -f /etc/pound/$instance.cfg -p /var/run/pound/$instance.pid
 			ret=$?
 			if [ $RETVAL -eq 0 ]; then
 			   	RETVAL=$ret
