@@ -73,7 +73,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc README
+%doc README FAQ CHANGELOG z*.py
 %attr(755,root,root) %{_sbindir}/*
 %dir %{_sysconfdir}/pound
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pound/*
