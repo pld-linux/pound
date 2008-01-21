@@ -45,11 +45,17 @@ start() {
 		for instance in $POUND_INSTANCES; do
 			is_up $instance && continue
 			msg_starting "Pound ($instance)"
-			daemon /usr/sbin/pound -v -f /etc/pound/$instance.cfg -p /var/run/pound/$instance.pid
+			PIDFILE=/var/run/pound/$instance.pid
+			start-stop-daemon --start \
+			--exec /usr/sbin/pound \
+			--pidfile $PIDFILE -- -v -f /etc/pound/$instance.cfg -p $PIDFILE
 			ret=$?
-			if [ $RETVAL -eq 0 ]; then
+			if [ $ret -eq 0 ]; then
+				ok
 			   	RETVAL=$ret
 				started=1
+			else
+				failed
 			fi
 		done
 		[ $started = 1 ] && touch /var/lock/subsys/pound
