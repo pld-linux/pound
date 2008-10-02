@@ -55,7 +55,7 @@ start() {
 			   	RETVAL=$ret
 				started=1
 			else
-				failed
+				fail
 			fi
 		done
 		[ $started = 1 ] && touch /var/lock/subsys/pound
