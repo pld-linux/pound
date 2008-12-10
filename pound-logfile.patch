@@ -19,8 +19,8 @@
 +                logmsg(LOG_ERR, "line %d: LogFile config: out of memory - aborted", n_lin);
 +                exit(1);
 +            }
-+			// force facility to log stdout internally.
-+			def_facility = -1;
++           // force facility to log stdout internally.
++           def_facility = -1;
          } else if(!regexec(&Grace, lin, 4, matches, 0)) {
              grace = atoi(lin + matches[1].rm_so);
          } else if(!regexec(&LogLevel, lin, 4, matches, 0)) {
