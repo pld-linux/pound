@@ -2,7 +2,7 @@ Summary:	Pound - reverse-proxy and load-balancer
 Summary(pl.UTF-8):	Pound - reverse-proxy i load-balancer
 Name:		pound
 Version:	2.4.3
-Release:	2
+Release:	2.2
 License:	GPL
 Group:		Networking/Daemons
 Source0:	http://www.apsis.ch/pound/Pound-%{version}.tgz
@@ -14,9 +14,17 @@ URL:		http://www.apsis.ch/pound/
 BuildRequires:	automake
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	pcre-devel
-BuildRequires:	rpmbuild(macros) >= 1.268
+BuildRequires:	rpmbuild(macros) >= 1.202
 Requires(post,preun):	/sbin/chkconfig
+Requires(postun):	/usr/sbin/groupdel
+Requires(postun):	/usr/sbin/userdel
+Requires(pre):	/bin/id
+Requires(pre):	/usr/bin/getgid
+Requires(pre):	/usr/sbin/groupadd
+Requires(pre):	/usr/sbin/useradd
 Requires:	rc-scripts
+Provides:	group(pound)
+Provides:	user(pound)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -62,14 +70,24 @@ install %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%pre
+%groupadd -g 200 %{name}
+%useradd -u 200 -d /var/lib/%{name} -g %{name} -c "Pound Daemon" %{name}
+
 %post
 /sbin/chkconfig --add %{name}
-%service %{name} restart "%{name} daemon"
+%service %{name} restart "Pound Daemon"
 
 %preun
 if [ "$1" = "0" ]; then
 	%service %{name} stop
 	/sbin/chkconfig --del %{name}
+fi
+
+%postun
+if [ "$1" = "0" ]; then
+	%userremove %{name}
+	%groupremove %{name}
 fi
 
 %files
@@ -81,4 +99,4 @@ fi
 %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/%{name}
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 %{_mandir}/man8/*
-%dir %attr(755,root,root) /var/run/%{name}
+%dir /var/run/%{name}
