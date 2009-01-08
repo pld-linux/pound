@@ -1,0 +1,86 @@
+--- Pound-2.4.3/svc.c~	2009-01-08 15:52:17.000000000 +0200
++++ Pound-2.4.3/svc.c	2009-01-08 17:38:56.093564323 +0200
+@@ -1516,7 +1516,7 @@
+         }
+         switch(cmd.cmd) {
+         case CTRL_LST:
+-            /* logmsg(LOG_INFO, "thr_control() list"); */
++            /* logmsg(LOG_NOTICE, "thr_control() list"); */
+             for(lstn = listeners; lstn; lstn = lstn->next) {
+                 write(ctl, (void *)lstn, sizeof(LISTENER));
+                 write(ctl, lstn->addr.ai_addr, lstn->addr.ai_addrlen);
+@@ -1563,55 +1563,55 @@
+             break;
+         case CTRL_EN_LSTN:
+             if((lstn = sel_lstn(&cmd)) == NULL)
+-                logmsg(LOG_INFO, "thr_control() bad listener %d", cmd.listener);
++                logmsg(LOG_NOTICE, "thr_control() bad listener %d", cmd.listener);
+             else
+                 lstn->disabled = 0;
+             break;
+         case CTRL_DE_LSTN:
+             if((lstn = sel_lstn(&cmd)) == NULL)
+-                logmsg(LOG_INFO, "thr_control() bad listener %d", cmd.listener);
++                logmsg(LOG_NOTICE, "thr_control() bad listener %d", cmd.listener);
+             else
+                 lstn->disabled = 1;
+             break;
+         case CTRL_EN_SVC:
+             if((svc = sel_svc(&cmd)) == NULL)
+-                logmsg(LOG_INFO, "thr_control() bad service %d/%d", cmd.listener, cmd.service);
++                logmsg(LOG_NOTICE, "thr_control() bad service %d/%d", cmd.listener, cmd.service);
+             else
+                 svc->disabled = 0;
+             break;
+         case CTRL_DE_SVC:
+             if((svc = sel_svc(&cmd)) == NULL)
+-                logmsg(LOG_INFO, "thr_control() bad service %d/%d", cmd.listener, cmd.service);
++                logmsg(LOG_NOTICE, "thr_control() bad service %d/%d", cmd.listener, cmd.service);
+             else
+                 svc->disabled = 1;
+             break;
+         case CTRL_EN_BE:
+             if((svc = sel_svc(&cmd)) == NULL) {
+-                logmsg(LOG_INFO, "thr_control() bad service %d/%d", cmd.listener, cmd.service);
++                logmsg(LOG_NOTICE, "thr_control() bad service %d/%d", cmd.listener, cmd.service);
+                 break;
+             }
+             if((be = sel_be(&cmd)) == NULL)
+-                logmsg(LOG_INFO, "thr_control() bad backend %d/%d/%d", cmd.listener, cmd.service, cmd.backend);
++                logmsg(LOG_NOTICE, "thr_control() bad backend %d/%d/%d", cmd.listener, cmd.service, cmd.backend);
+             else
+                 kill_be(svc, be, BE_ENABLE);
+             break;
+         case CTRL_DE_BE:
+             if((svc = sel_svc(&cmd)) == NULL) {
+-                logmsg(LOG_INFO, "thr_control() bad service %d/%d", cmd.listener, cmd.service);
++                logmsg(LOG_NOTICE, "thr_control() bad service %d/%d", cmd.listener, cmd.service);
+                 break;
+             }
+             if((be = sel_be(&cmd)) == NULL)
+-                logmsg(LOG_INFO, "thr_control() bad backend %d/%d/%d", cmd.listener, cmd.service, cmd.backend);
++                logmsg(LOG_NOTICE, "thr_control() bad backend %d/%d/%d", cmd.listener, cmd.service, cmd.backend);
+             else
+                 kill_be(svc, be, BE_DISABLE);
+             break;
+         case CTRL_ADD_SESS:
+             if((svc = sel_svc(&cmd)) == NULL) {
+-                logmsg(LOG_INFO, "thr_control() bad service %d/%d", cmd.listener, cmd.service);
++                logmsg(LOG_NOTICE, "thr_control() bad service %d/%d", cmd.listener, cmd.service);
+                 break;
+             }
+             if((be = sel_be(&cmd)) == NULL) {
+-                logmsg(LOG_INFO, "thr_control() bad back-end %d/%d", cmd.listener, cmd.service);
++                logmsg(LOG_NOTICE, "thr_control() bad back-end %d/%d", cmd.listener, cmd.service);
+                 break;
+             }
+             if(ret_val = pthread_mutex_lock(&svc->mut))
+@@ -1622,7 +1622,7 @@
+             break;
+         case CTRL_DEL_SESS:
+             if((svc = sel_svc(&cmd)) == NULL) {
+-                logmsg(LOG_INFO, "thr_control() bad service %d/%d", cmd.listener, cmd.service);
++                logmsg(LOG_NOTICE, "thr_control() bad service %d/%d", cmd.listener, cmd.service);
+                 break;
+             }
+             if(ret_val = pthread_mutex_lock(&svc->mut))
