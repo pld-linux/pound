@@ -1,0 +1,10 @@
+--- Pound-2.4.3/pound.c~	2009-01-08 15:52:17.000000000 +0200
++++ Pound-2.4.3/pound.c	2009-01-08 16:09:23.060768420 +0200
+@@ -171,7 +171,6 @@
+     (void)umask(077);
+     control_sock = -1;
+     log_facility = -1;
+-    logmsg(LOG_NOTICE, "starting...");
+ 
+     signal(SIGHUP, h_shut);
+     signal(SIGINT, h_shut);
