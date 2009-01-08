@@ -113,7 +113,7 @@ stop() {
 	local ret instance
 	# Stop daemons.
 	if any_up; then
-		msg_stopping "Pound"
+		msg_stopping "Pound"; started
 		for instance in $POUND_INSTANCES; do
 			is_up $instance || continue
 			show "Stopping Pound instance %s" "$instance"; busy
