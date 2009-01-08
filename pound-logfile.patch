@@ -48,33 +48,82 @@
      regfree(&LogLevel);
      regfree(&Grace);
      regfree(&Alive);
---- Pound-2.4.3/pound.c	2008-05-31 13:25:43.000000000 +0300
-+++ Pound-2.4.3-logfile/pound.c	2008-12-11 00:51:21.169092412 +0200
-@@ -33,6 +33,7 @@
+--- Pound-2.4.3-logfile/pound.c	2008-12-11 00:51:21.169092412 +0200
++++ Pound-2.4.3.logs/pound.c	2009-01-08 18:03:00.316961385 +0200
+@@ -33,6 +33,8 @@
              *group,             /* group to run as */
              *root_jail,         /* directory to chroot to */
              *pid_name,          /* file to record pid in */
-+            *log_file,          /* print log messages to this file */
++            *log_file,          /* print log messages to this file, instead of syslog */
++            *error_log,         /* print error messages to this file, instead of syslog */
              *ctrl_name;         /* control socket name */
  
  int         alive_to,           /* check interval for resurrection */
-@@ -294,6 +295,9 @@
-                     close(0);
-                     close(1);
-                     close(2);
-+                } else if (log_file) {
-+                    freopen(log_file, "a", stdout);
+@@ -289,10 +291,22 @@
+         /* daemonize - make ourselves a subprocess. */
+         switch (fork()) {
+             case 0:
+-                if(log_facility != -1) {
+-                    close(0);
+-                    close(1);
+-                    close(2);
++                close(0);
++                if (log_file) {
++                    stdout = freopen(log_file, "a", stdout);
 +                    setlinebuf(stdout);
++                } else {
++                    if (log_facility != -1) {
++                        close(1);
++                    }
++                }
++                if (error_log) {
++                    stderr = freopen(error_log, "a", stderr);
++                    setlinebuf(stderr);
++                } else {
++                    if (log_facility != -1) {
++                        close(2);
++                    }
                  }
                  break;
              case -1:
---- Pound-2.4.3/pound.h	2008-05-31 13:25:43.000000000 +0300
-+++ Pound-2.4.3-logfile/pound.h	2008-12-11 00:16:43.449299956 +0200
-@@ -236,6 +236,7 @@
+--- Pound-2.4.3-logfile/pound.h	2008-12-11 00:16:43.449299956 +0200
++++ Pound-2.4.3.logs/pound.h	2009-01-08 17:47:38.940178535 +0200
+@@ -236,6 +236,8 @@
              *group,             /* group to run as */
              *root_jail,         /* directory to chroot to */
              *pid_name,          /* file to record pid in */
-+            *log_file,          /* print log messages to this file */
++            *log_file,          /* print log messages to this file, instead of syslog */
++            *error_log,         /* print error messages to this file, instead of syslog */
              *ctrl_name;         /* control socket name */
  
  extern int  alive_to,           /* check interval for resurrection */
+--- Pound-2.4.3/svc.c	2009-01-08 18:20:02.970625040 +0200
++++ Pound-2.4.3.logs/svc.c	2009-01-08 18:16:21.407506564 +0200
+@@ -176,13 +176,25 @@
+     char    buf[MAXBUF + 1];
+     va_list ap;
+     struct tm   *t_now, t_res;
++    int log = (priority == LOG_INFO || priority == LOG_DEBUG);
+ 
+     buf[MAXBUF] = '\0';
+     va_start(ap, fmt);
+     vsnprintf(buf, MAXBUF, fmt, ap);
+     va_end(ap);
+-    if(log_facility == -1) {
+-        fprintf((priority == LOG_INFO || priority == LOG_DEBUG)? stdout: stderr, "%s\n", buf);
++
++    // if access log or error log are set, use them.
++    if (log && log_file) {
++        printf("%s\n", buf);
++        fprintf(stdout, "%s\n", buf);
++        return;
++    }
++    if (!log && error_log) {
++        fprintf(stderr, "%s\n", buf);
++    }
++
++    if (log_facility == -1) {
++        fprintf(log ? stdout : stderr, "%s\n", buf);
+     } else {
+         if(print_log)
+             printf("%s\n", buf);
