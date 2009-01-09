@@ -176,9 +176,6 @@ case "$1" in
   stop)
   	stop
 	;;
-  status)
-	pound_status
-	;;
   restart|force-reload)
 	restart
 	;;
@@ -197,8 +194,11 @@ case "$1" in
 		RETVAL=7
 	fi
 	;;
+  status)
+	pound_status
+	;;
   *)
-	msg_usage "$0 {start|stop|restart|force-reload|status} [INSTANCE NAMES]"
+	msg_usage "$0 {start|stop|restart|force-reload|flush-logs|status} [INSTANCE NAMES]"
 	exit 3
 esac
 
