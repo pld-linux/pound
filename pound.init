@@ -182,6 +182,21 @@ case "$1" in
   restart|force-reload)
 	restart
 	;;
+  flush-logs)
+	if [ -f /var/lock/subsys/pound ]; then
+		for instance in $POUND_INSTANCES; do
+			show "Rotating Pound logs for %s instance" $instance
+			killproc --pidfile /var/run/pound/$instance.pid pound -USR1
+			ret=$?
+			if [ $ret != 0 ]; then
+			   	RETVAL=$ret
+			fi
+		done
+	else
+		msg_not_running "Pound"
+		RETVAL=7
+	fi
+	;;
   *)
 	msg_usage "$0 {start|stop|restart|force-reload|status} [INSTANCE NAMES]"
 	exit 3
