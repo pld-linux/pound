@@ -145,17 +145,22 @@ restart() {
 	start
 }
 
-if [ "$1" != status -a "$2" ]; then
-	POUND_INSTANCES="$2"
-fi
+condrestart() {
+	if [ -f /var/lock/subsys/pound ]; then
+		stop
+		start
+	else
+		msg_not_running "Pound"
+		RETVAL=$1
+	fi
+}
 
 pound_status() {
-	local stat pidfile instance
+	local stat=1 pidfile instance
 
 	nls "Configured Pound instances:"
    	echo " $POUND_INSTANCES"
 	nls "Currently active Pound instances:"
-	stat=1
 	for pidfile in /var/run/pound/*.pid; do
 		[ -f "$pidfile" ] || continue
 		instance=${pidfile#/var/run/pound/}
@@ -167,6 +172,10 @@ pound_status() {
 	exit $stat
 }
 
+if [ "$1" != status -a "$2" ]; then
+	POUND_INSTANCES="$2"
+fi
+
 RETVAL=0
 # See how we were called.
 case "$1" in
@@ -176,8 +185,14 @@ case "$1" in
   stop)
   	stop
 	;;
-  restart|force-reload)
+  restart)
 	restart
+	;;
+  try-restart)
+	condrestart 0
+	;;
+  force-reload)
+	condrestart 7
 	;;
   flush-logs)
 	if [ -f /var/lock/subsys/pound ]; then
@@ -198,7 +213,7 @@ case "$1" in
 	pound_status
 	;;
   *)
-	msg_usage "$0 {start|stop|restart|force-reload|flush-logs|status} [INSTANCE NAMES]"
+	msg_usage "$0 {start|stop|restart|try-restart|force-reload|flush-logs|status} [INSTANCE NAMES]"
 	exit 3
 esac
 
