@@ -25,7 +25,7 @@
  F_CONF flag in the Makefile).
  .TP
 -\fI/usr/local/etc/pound/cert.pem\fR
-+\fI/etc/pound/pound/cert.pem\fR
++\fI/etc/pound/cert.pem\fR
  the certificate file(s) for HTTPS. The location must be defined in the configuration
  file - this is only a suggestion. The file must contain a PEM-encoded certificate,
  optionally a certificate chain from a known Certificate Authority to your server certificate
