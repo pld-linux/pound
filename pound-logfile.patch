@@ -200,7 +200,7 @@
  
  extern int  alive_to,           /* check interval for resurrection */
 --- Pound-2.4.3.logs/svc.c	2009-01-08 18:16:21.407506564 +0200
-+++ Pound-2.4.3.logs/svc.c	2009-01-08 18:16:21.407506564 +0200
++++ Pound-2.4.3/svc.c	2009-01-14 15:16:55.002576968 +0200
 @@ -176,13 +176,25 @@
      char    buf[MAXBUF + 1];
      va_list ap;
@@ -216,12 +216,12 @@
 +
 +    // if access log or error log are set, use them.
 +    if (log && log_file) {
-+        printf("%s\n", buf);
 +        fprintf(stdout, "%s\n", buf);
 +        return;
 +    }
 +    if (!log && error_log) {
 +        fprintf(stderr, "%s\n", buf);
++        return;
 +    }
 +
 +    if (log_facility == -1) {
