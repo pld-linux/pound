@@ -129,17 +129,20 @@ stop() {
 restart() {
 	local instance
 
-	# make up list of configured and up instances
-	local list
-	show "Checking configuration"; busy
-	for instance in $POUND_INSTANCES; do
-		# skip ones whose config fails
-		configtest $instance || continue
-		list="$list $instance"
-	done
-	ok
+	if any_up; then
+		# make up list of configured and up instances
+		local list
+		show "Checking configuration"; busy
+		for instance in $POUND_INSTANCES; do
+			# skip ones whose config fails
+			configtest $instance || continue
+			list="$list $instance"
+		done
+		ok
 
-	POUND_INSTANCES=$list
+		POUND_INSTANCES=$list
+
+	fi
 
 	stop
 	start
