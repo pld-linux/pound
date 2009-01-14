@@ -1,5 +1,5 @@
---- Pound-2.4.3/pound.8~	2008-05-31 13:25:43.000000000 +0300
-+++ Pound-2.4.3/pound.8	2009-01-14 21:18:06.868543633 +0200
+--- Pound-2.4.3/pound.8	2009-01-14 21:18:06.868543633 +0200
++++ Pound-2.4.3/pound.8	2009-01-14 21:20:28.297957593 +0200
 @@ -155,7 +155,7 @@
  \fB\-f\fR config_file
  Location of the configuration file (see below for a full description of the format).
@@ -9,6 +9,15 @@
  .TP
  \fB\-p\fR pid_file
  Location of the pid file.
+@@ -163,7 +163,7 @@
+ will write its own pid into this file. Normally this is used for shell
+ scripts that control starting and stopping of the daemon.
+ Default:
+-.I /var/run/pound.pid
++.I /var/run/pound/pound.pid
+ .PP
+ In general, any number of back-end servers may be specified. Use the priority to
+ affect the load distribution among unequal-performance servers.
 @@ -1107,16 +1107,16 @@
  .br
  .SH FILES
