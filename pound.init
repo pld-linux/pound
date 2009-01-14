@@ -138,12 +138,16 @@ restart() {
 			configtest $instance || continue
 			list="$list $instance"
 		done
-		ok
-
-		POUND_INSTANCES=$list
 
 		# nothing left or never was
-		[ "$list" ] || return
+		if [ -z "$list" ]; then
+			fail
+			return
+		else
+			POUND_INSTANCES=$list
+			ok
+		fi
+
 	fi
 
 	stop
