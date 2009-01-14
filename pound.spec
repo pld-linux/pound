@@ -2,7 +2,7 @@ Summary:	Pound - reverse-proxy and load-balancer
 Summary(pl.UTF-8):	Pound - reverse-proxy i load-balancer
 Name:		pound
 Version:	2.4.3
-Release:	5
+Release:	5.3
 License:	GPL
 Group:		Networking/Daemons
 Source0:	http://www.apsis.ch/pound/Pound-%{version}.tgz
@@ -12,6 +12,7 @@ Patch1:		%{name}-hash-UL.patch
 Patch2:		%{name}-logfile.patch
 Patch3:		%{name}-daemonize.patch
 Patch4:		%{name}-log-notice.patch
+Patch5:		%{name}-man.patch
 Source1:	%{name}.cfg
 Source2:	%{name}.init
 Source3:	%{name}.sysconfig
@@ -59,6 +60,7 @@ swobodnego używania, kopiowania i rozdawania.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 %build
 cp -f /usr/share/automake/config.sub .
