@@ -199,16 +199,48 @@
              *ctrl_name;         /* control socket name */
  
  extern int  alive_to,           /* check interval for resurrection */
---- Pound-2.4.3.logs/svc.c	2009-01-08 18:16:21.407506564 +0200
-+++ Pound-2.4.3/svc.c	2009-01-14 15:16:55.002576968 +0200
-@@ -176,13 +176,25 @@
+--- Pound-2.4.3/svc.c	2009-01-14 15:16:55.002576968 +0200
++++ Pound-2.4.3/svc.c	2009-01-14 15:20:43.342553651 +0200
+@@ -172,49 +172,47 @@
+ #ifdef  HAVE_STDARG_H
+ void
+ logmsg(const int priority, const char *fmt, ...)
+-{
+-    char    buf[MAXBUF + 1];
+-    va_list ap;
+-    struct tm   *t_now, t_res;
+-
+-    buf[MAXBUF] = '\0';
+-    va_start(ap, fmt);
+-    vsnprintf(buf, MAXBUF, fmt, ap);
+-    va_end(ap);
+-    if(log_facility == -1) {
+-        fprintf((priority == LOG_INFO || priority == LOG_DEBUG)? stdout: stderr, "%s\n", buf);
+-    } else {
+-        if(print_log)
+-            printf("%s\n", buf);
+-        else
+-            syslog(log_facility | priority, "%s", buf);
+-    }
+-    return;
+-}
+ #else
+ void
+ logmsg(const int priority, const char *fmt, va_alist)
+ va_dcl
++#endif
+ {
      char    buf[MAXBUF + 1];
      va_list ap;
      struct tm   *t_now, t_res;
 +    int log = (priority == LOG_INFO || priority == LOG_DEBUG);
  
      buf[MAXBUF] = '\0';
-     va_start(ap, fmt);
++#ifdef  HAVE_STDARG_H
++    va_start(ap, fmt);
++#else
+     va_start(ap);
++#endif
      vsnprintf(buf, MAXBUF, fmt, ap);
      va_end(ap);
 -    if(log_facility == -1) {
@@ -227,5 +259,17 @@
 +    if (log_facility == -1) {
 +        fprintf(log ? stdout : stderr, "%s\n", buf);
      } else {
-         if(print_log)
+-        if(print_log)
++        if (print_log) {
              printf("%s\n", buf);
+-        else
++		} else {
+             syslog(log_facility | priority, "%s", buf);
++		}
+     }
+     return;
+ }
+-#endif
+ 
+ /*
+  * Translate inet/inet6 address/port into a string
