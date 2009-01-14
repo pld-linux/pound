@@ -142,6 +142,8 @@ restart() {
 
 		POUND_INSTANCES=$list
 
+		# nothing left or never was
+		[ "$list" ] || return
 	fi
 
 	stop
