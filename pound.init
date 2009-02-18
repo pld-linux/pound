@@ -61,14 +61,14 @@ any_up() {
 
 # check if all of the instances are up
 all_up() {
-	local ret=0 instance pidfile
+	local ret=1 instance pidfile
 
 	for pidfile in /var/run/pound/*.pid; do
 		[ -f "$pidfile" ] || continue
 		instance=${pidfile#/var/run/pound/}
 		instance=${instance%.pid}
 		is_up $instance && continue
-		ret=1
+		ret=0
 	done
 
 	return $ret
@@ -121,6 +121,7 @@ stop() {
 			ret=$?
 		done
 		rm -f /var/lock/subsys/pound > /dev/null 2>&1
+		rm -f /var/run/pound/$instance.pid > /dev/null 2>&1
 	else
 		msg_not_running "Pound"
 	fi
