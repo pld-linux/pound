@@ -20,6 +20,7 @@ Source4:	%{name}.logrotate
 URL:		http://www.apsis.ch/pound/
 BuildRequires:	automake
 BuildRequires:	openssl-devel >= 0.9.7d
+BuildRequires:	openssl-tools
 BuildRequires:	pcre-devel
 BuildRequires:	rpmbuild(macros) >= 1.202
 Requires(post,preun):	/sbin/chkconfig
