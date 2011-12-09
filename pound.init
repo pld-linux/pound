@@ -33,7 +33,6 @@ configtest() {
 	pound -c -f /etc/pound/$instance.cfg > /dev/null
 }
 
-
 # check if the $1 instance is up
 is_up() {
 	local instance="$1"
@@ -78,53 +77,55 @@ start() {
 	local ret started=0 found=0 instance
 
 	# Check if the service is already running?
-	if ! all_up; then
-		msg_starting "Pound"; started
-		for instance in $POUND_INSTANCES; do
-			show "Starting Pound instance %s" "$instance"
-			if is_up $instance; then
-				started
-				continue
-			fi
-
-			PIDFILE=/var/run/pound/$instance.pid
-			start-stop-daemon --start \
-				--exec /usr/sbin/pound \
-				--pidfile $PIDFILE -- -v -f /etc/pound/$instance.cfg -p $PIDFILE
-			ret=$?
-
-			if [ $ret -eq 0 ]; then
-				ok
-			   	RETVAL=$ret
-				started=1
-				found=1
-			else
-				fail
-			fi
-		done
-
-		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/pound
-	else
+	if all_up; then
 		msg_already_running "Pound"
+		return
 	fi
+
+	msg_starting "Pound"; started
+	for instance in $POUND_INSTANCES; do
+		show "Starting Pound instance %s" "$instance"
+		if is_up $instance; then
+			started
+			continue
+		fi
+
+		PIDFILE=/var/run/pound/$instance.pid
+		start-stop-daemon --start \
+			--exec /usr/sbin/pound \
+			--pidfile $PIDFILE -- -v -f /etc/pound/$instance.cfg -p $PIDFILE
+		ret=$?
+
+		if [ $ret -eq 0 ]; then
+			ok
+			RETVAL=$ret
+			started=1
+			found=1
+		else
+			fail
+		fi
+	done
+
+	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/pound
 }
 
 stop() {
-	local ret instance
 	# Stop daemons.
-	if any_up; then
-		msg_stopping "Pound"; started
-		for instance in $POUND_INSTANCES; do
-			is_up $instance || continue
-			show "Stopping Pound instance %s" "$instance"; busy
-			killproc --pidfile pound/$instance.pid pound
-			ret=$?
-		done
-		rm -f /var/lock/subsys/pound > /dev/null 2>&1
-		rm -f /var/run/pound/$instance.pid > /dev/null 2>&1
-	else
+	if ! any_up; then
 		msg_not_running "Pound"
+		return
 	fi
+
+	local ret instance
+	msg_stopping "Pound"; started
+	for instance in $POUND_INSTANCES; do
+		is_up $instance || continue
+		show "Stopping Pound instance %s" "$instance"; busy
+		killproc --pidfile pound/$instance.pid pound
+		ret=$?
+	done
+	rm -f /var/lock/subsys/pound > /dev/null 2>&1
+	rm -f /var/run/pound/$instance.pid > /dev/null 2>&1
 }
 
 restart() {
@@ -156,13 +157,14 @@ restart() {
 }
 
 condrestart() {
-	if [ -f /var/lock/subsys/pound ]; then
-		stop
-		start
-	else
+	if [ ! -f /var/lock/subsys/pound ]; then
 		msg_not_running "Pound"
 		RETVAL=$1
+		return
 	fi
+
+	stop
+	start
 }
 
 pound_status() {
