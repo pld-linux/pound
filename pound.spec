@@ -64,7 +64,7 @@ swobodnego używania, kopiowania i rozdawania.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
-%patch6 -p0
+%patch6 -p1
 
 %build
 cp -f /usr/share/automake/config.sub .
@@ -77,14 +77,14 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man8,%{_sysconfdir},/etc/{sysconfig,logrotate.d,rc.d/init.d}} \
 	$RPM_BUILD_ROOT{/var/log/{%{name},archive/%{name}},/var/run/%{name}}
 
-install pound    $RPM_BUILD_ROOT%{_sbindir}
-install poundctl $RPM_BUILD_ROOT%{_sbindir}
-install pound.8  $RPM_BUILD_ROOT%{_mandir}/man8
-install poundctl.8 $RPM_BUILD_ROOT%{_mandir}/man8
-install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}
-install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
-install %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
-install %{SOURCE4} $RPM_BUILD_ROOT/etc/logrotate.d/%{name}
+install -p pound    $RPM_BUILD_ROOT%{_sbindir}
+install -p poundctl $RPM_BUILD_ROOT%{_sbindir}
+cp -p pound.8  $RPM_BUILD_ROOT%{_mandir}/man8
+cp -p poundctl.8 $RPM_BUILD_ROOT%{_mandir}/man8
+cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}
+install -p %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
+cp -p %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
+cp -p %{SOURCE4} $RPM_BUILD_ROOT/etc/logrotate.d/%{name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
