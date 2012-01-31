@@ -1,23 +1,22 @@
 Summary:	Pound - reverse-proxy and load-balancer
 Summary(pl.UTF-8):	Pound - reverse-proxy i load-balancer
 Name:		pound
-Version:	2.5
+Version:	2.6
 Release:	2
 License:	GPL
 Group:		Networking/Daemons
 Source0:	http://www.apsis.ch/pound/Pound-%{version}.tgz
-# Source0-md5:	8a39f5902094619afcda7d12d9d8342c
+# Source0-md5:	8c913b527332694943c4c67c8f152071
+Source1:	%{name}.cfg
+Source2:	%{name}.init
+Source3:	%{name}.sysconfig
+Source4:	%{name}.logrotate
+Source5:	%{name}.tmpfiles
 Patch0:		%{name}-hash-UL.patch
 Patch1:		%{name}-logfile.patch
 Patch2:		%{name}-daemonize.patch
 Patch3:		%{name}-log-notice.patch
 Patch4:		%{name}-man.patch
-Patch5:		%{name}-openssl.patch
-Patch6:		MultipleAddHeaderHonored.diff
-Source1:	%{name}.cfg
-Source2:	%{name}.init
-Source3:	%{name}.sysconfig
-Source4:	%{name}.logrotate
 URL:		http://www.apsis.ch/pound/
 BuildRequires:	automake
 BuildRequires:	openssl-devel >= 0.9.7d
@@ -63,8 +62,6 @@ swobodnego używania, kopiowania i rozdawania.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-%patch5 -p1
-%patch6 -p0
 
 %build
 cp -f /usr/share/automake/config.sub .
@@ -75,16 +72,19 @@ cp -f /usr/share/automake/config.sub .
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man8,%{_sysconfdir},/etc/{sysconfig,logrotate.d,rc.d/init.d}} \
-	$RPM_BUILD_ROOT{/var/log/{%{name},archive/%{name}},/var/run/%{name}}
+	$RPM_BUILD_ROOT{/var/log/{%{name},archive/%{name}},/var/run/%{name}} \
+	$RPM_BUILD_ROOT/usr/lib/tmpfiles.d
 
-install pound    $RPM_BUILD_ROOT%{_sbindir}
-install poundctl $RPM_BUILD_ROOT%{_sbindir}
-install pound.8  $RPM_BUILD_ROOT%{_mandir}/man8
-install poundctl.8 $RPM_BUILD_ROOT%{_mandir}/man8
-install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}
-install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
-install %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
-install %{SOURCE4} $RPM_BUILD_ROOT/etc/logrotate.d/%{name}
+install -p pound    $RPM_BUILD_ROOT%{_sbindir}
+install -p poundctl $RPM_BUILD_ROOT%{_sbindir}
+cp -p pound.8  $RPM_BUILD_ROOT%{_mandir}/man8
+cp -p poundctl.8 $RPM_BUILD_ROOT%{_mandir}/man8
+cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}
+install -p %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
+cp -p %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
+cp -p %{SOURCE4} $RPM_BUILD_ROOT/etc/logrotate.d/%{name}
+
+install %{SOURCE5} $RPM_BUILD_ROOT/usr/lib/tmpfiles.d/%{name}.conf
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -127,6 +127,7 @@ fi
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/%{name}
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 %{_mandir}/man8/*
+/usr/lib/tmpfiles.d/%{name}.conf
 %dir /var/run/%{name}
 %dir %attr(751,root,root) /var/log/%{name}
 %attr(750,root,root) %dir /var/log/archive/%{name}
