@@ -7,15 +7,16 @@ License:	GPL
 Group:		Networking/Daemons
 Source0:	http://www.apsis.ch/pound/Pound-%{version}.tgz
 # Source0-md5:	8c913b527332694943c4c67c8f152071
+Source1:	%{name}.cfg
+Source2:	%{name}.init
+Source3:	%{name}.sysconfig
+Source4:	%{name}.logrotate
+Source5:	%{name}.tmpfiles
 Patch0:		%{name}-hash-UL.patch
 Patch1:		%{name}-logfile.patch
 Patch2:		%{name}-daemonize.patch
 Patch3:		%{name}-log-notice.patch
 Patch4:		%{name}-man.patch
-Source1:	%{name}.cfg
-Source2:	%{name}.init
-Source3:	%{name}.sysconfig
-Source4:	%{name}.logrotate
 URL:		http://www.apsis.ch/pound/
 BuildRequires:	automake
 BuildRequires:	openssl-devel >= 0.9.7d
@@ -71,7 +72,8 @@ cp -f /usr/share/automake/config.sub .
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man8,%{_sysconfdir},/etc/{sysconfig,logrotate.d,rc.d/init.d}} \
-	$RPM_BUILD_ROOT{/var/log/{%{name},archive/%{name}},/var/run/%{name}}
+	$RPM_BUILD_ROOT{/var/log/{%{name},archive/%{name}},/var/run/%{name}} \
+	$RPM_BUILD_ROOT/usr/lib/tmpfiles.d
 
 install -p pound    $RPM_BUILD_ROOT%{_sbindir}
 install -p poundctl $RPM_BUILD_ROOT%{_sbindir}
@@ -81,6 +83,8 @@ cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}
 install -p %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 cp -p %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
 cp -p %{SOURCE4} $RPM_BUILD_ROOT/etc/logrotate.d/%{name}
+
+install %{SOURCE5} $RPM_BUILD_ROOT/usr/lib/tmpfiles.d/%{name}.conf
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -123,6 +127,7 @@ fi
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/%{name}
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 %{_mandir}/man8/*
+/usr/lib/tmpfiles.d/%{name}.conf
 %dir /var/run/%{name}
 %dir %attr(751,root,root) /var/log/%{name}
 %attr(750,root,root) %dir /var/log/archive/%{name}
