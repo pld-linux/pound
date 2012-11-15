@@ -66,7 +66,7 @@ swobodnego używania, kopiowania i rozdawania.
 %build
 cp -f /usr/share/automake/config.sub .
 %configure \
-	--with-maxbuf=2048
+	--with-maxbuf=4096
 %{__make}
 
 %install
