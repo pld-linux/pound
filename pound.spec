@@ -22,7 +22,7 @@ BuildRequires:	automake
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	openssl-tools
 BuildRequires:	pcre-devel
-BuildRequires:	rpmbuild(macros) >= 1.202
+BuildRequires:	rpmbuild(macros) >= 1.644
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
@@ -73,7 +73,7 @@ cp -f /usr/share/automake/config.sub .
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man8,%{_sysconfdir},/etc/{sysconfig,logrotate.d,rc.d/init.d}} \
 	$RPM_BUILD_ROOT{/var/log/{%{name},archive/%{name}},/var/run/%{name}} \
-	$RPM_BUILD_ROOT/usr/lib/tmpfiles.d
+	$RPM_BUILD_ROOT%{systemdtmpfilesdir}
 
 install -p pound    $RPM_BUILD_ROOT%{_sbindir}
 install -p poundctl $RPM_BUILD_ROOT%{_sbindir}
@@ -84,7 +84,7 @@ install -p %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 cp -p %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
 cp -p %{SOURCE4} $RPM_BUILD_ROOT/etc/logrotate.d/%{name}
 
-install %{SOURCE5} $RPM_BUILD_ROOT/usr/lib/tmpfiles.d/%{name}.conf
+install %{SOURCE5} $RPM_BUILD_ROOT%{systemdtmpfilesdir}/%{name}.conf
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -127,7 +127,7 @@ fi
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/%{name}
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
 %{_mandir}/man8/*
-/usr/lib/tmpfiles.d/%{name}.conf
+%{systemdtmpfilesdir}/%{name}.conf
 %dir /var/run/%{name}
 %dir %attr(751,root,root) /var/log/%{name}
 %attr(750,root,root) %dir /var/log/archive/%{name}
