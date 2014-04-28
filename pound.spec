@@ -2,7 +2,7 @@ Summary:	Pound - reverse-proxy and load-balancer
 Summary(pl.UTF-8):	Pound - reverse-proxy i load-balancer
 Name:		pound
 Version:	2.6
-Release:	6
+Release:	7
 License:	GPL v3
 Group:		Networking/Daemons
 Source0:	http://www.apsis.ch/pound/Pound-%{version}.tgz
@@ -66,7 +66,7 @@ swobodnego używania, kopiowania i rozdawania.
 %build
 cp -f /usr/share/automake/config.sub .
 %configure \
-	--with-maxbuf=4096
+	--with-maxbuf=6144
 %{__make}
 
 %install
@@ -75,7 +75,7 @@ install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man8,%{_sysconfdir},/etc/{sysc
 	$RPM_BUILD_ROOT{/var/log/{%{name},archive/%{name}},/var/run/%{name}} \
 	$RPM_BUILD_ROOT%{systemdtmpfilesdir}
 
-install -p pound    $RPM_BUILD_ROOT%{_sbindir}
+install -p pound $RPM_BUILD_ROOT%{_sbindir}
 install -p poundctl $RPM_BUILD_ROOT%{_sbindir}
 cp -p pound.8  $RPM_BUILD_ROOT%{_mandir}/man8
 cp -p poundctl.8 $RPM_BUILD_ROOT%{_mandir}/man8
@@ -83,8 +83,7 @@ cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}
 install -p %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 cp -p %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
 cp -p %{SOURCE4} $RPM_BUILD_ROOT/etc/logrotate.d/%{name}
-
-install %{SOURCE5} $RPM_BUILD_ROOT%{systemdtmpfilesdir}/%{name}.conf
+cp -p %{SOURCE5} $RPM_BUILD_ROOT%{systemdtmpfilesdir}/%{name}.conf
 
 %clean
 rm -rf $RPM_BUILD_ROOT
