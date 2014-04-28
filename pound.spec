@@ -19,6 +19,7 @@ Patch3:		%{name}-log-notice.patch
 Patch4:		%{name}-man.patch
 URL:		http://www.apsis.ch/pound/
 BuildRequires:	automake
+BuildRequires:	libtcmalloc-devel
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	openssl-tools
 BuildRequires:	pcre-devel
@@ -66,6 +67,10 @@ swobodnego używania, kopiowania i rozdawania.
 %build
 cp -f /usr/share/automake/config.sub .
 %configure \
+	--enable-super \
+	--enable-pcreposix \
+	--enable-tcmalloc \
+	--disable-hoard \
 	--with-maxbuf=6144
 %{__make}
 
