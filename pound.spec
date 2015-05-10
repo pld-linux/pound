@@ -1,8 +1,13 @@
+%bcond_without	tcmalloc	# tcmalloc allocator
+
+%ifarch x32
+%undefine       with_tcmalloc
+%endif
 Summary:	Pound - reverse-proxy and load-balancer
 Summary(pl.UTF-8):	Pound - reverse-proxy i load-balancer
 Name:		pound
 Version:	2.7
-Release:	1
+Release:	2
 License:	GPL v3
 Group:		Networking/Daemons
 Source0:	http://www.apsis.ch/pound/Pound-%{version}.tgz
@@ -19,7 +24,7 @@ Patch3:		%{name}-log-notice.patch
 Patch4:		%{name}-man.patch
 URL:		http://www.apsis.ch/pound/
 BuildRequires:	automake
-BuildRequires:	libtcmalloc-devel
+%{?with_tcmalloc:BuildRequires:	libtcmalloc-devel}
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	openssl-tools
 BuildRequires:	pcre-devel
@@ -69,7 +74,7 @@ cp -f /usr/share/automake/config.sub .
 %configure \
 	--enable-super \
 	--enable-pcreposix \
-	--enable-tcmalloc \
+	%{__enable_disable tcmalloc} \
 	--disable-hoard \
 	--with-maxbuf=6144
 %{__make}
