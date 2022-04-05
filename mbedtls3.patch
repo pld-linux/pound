@@ -1,0 +1,92 @@
+--- Pound-3.0.1/include/pound.h.in~	2021-08-23 17:31:52.000000000 +0200
++++ Pound-3.0.1/include/pound.h.in	2022-04-05 12:35:33.796420709 +0200
+@@ -68,8 +68,7 @@
+ #include    <grp.h>
+ #include    <signal.h>
+ #include    <setjmp.h>
+-#include    <mbedtls/config.h>
+-#include    <mbedtls/certs.h>
++#include    <mbedtls/build_info.h>
+ #include    <mbedtls/oid.h>
+ #include    <mbedtls/asn1.h>
+ #include    <mbedtls/x509.h>
+--- Pound-3.0.1/CMakeLists.txt~	2022-04-04 23:23:36.000000000 +0200
++++ Pound-3.0.1/CMakeLists.txt	2022-04-05 12:36:14.645777663 +0200
+@@ -28,7 +28,7 @@
+ find_package(Threads REQUIRED)
+ 
+ include(CheckIncludeFiles)
+-CHECK_INCLUDE_FILES("stdio.h;pthread.h;yaml.h;nanomsg/nn.h;nanomsg/inproc.h;nanomsg/pipeline.h;nanomsg/pair.h;nanomsg/reqrep.h;stdlib.h;unistd.h;fcntl.h;ctype.h;getopt.h;string.h;syslog.h;sys/types.h;sys/socket.h;netdb.h;sys/stat.h;time.h;poll.h;semaphore.h;pwd.h;grp.h;signal.h;setjmp.h;mbedtls/config.h;mbedtls/certs.h;mbedtls/oid.h;mbedtls/asn1.h;mbedtls/x509.h;mbedtls/entropy.h;mbedtls/ctr_drbg.h;mbedtls/ssl.h;mbedtls/error.h" HAVE_MANDATORY_INCLUDES LANGUAGE C)
++CHECK_INCLUDE_FILES("stdio.h;pthread.h;yaml.h;nanomsg/nn.h;nanomsg/inproc.h;nanomsg/pipeline.h;nanomsg/pair.h;nanomsg/reqrep.h;stdlib.h;unistd.h;fcntl.h;ctype.h;getopt.h;string.h;syslog.h;sys/types.h;sys/socket.h;netdb.h;sys/stat.h;time.h;poll.h;semaphore.h;pwd.h;grp.h;signal.h;setjmp.h;mbedtls/oid.h;mbedtls/build_info.h;mbedtls/asn1.h;mbedtls/x509.h;mbedtls/entropy.h;mbedtls/ctr_drbg.h;mbedtls/ssl.h;mbedtls/error.h" HAVE_MANDATORY_INCLUDES LANGUAGE C)
+ if(NOT HAVE_MANDATORY_INCLUDES)
+ message(FATAL_ERROR "Missing mandatory header files!")
+ endif()
+--- Pound-3.0.2/src/config.c.orig	2021-11-28 17:04:25.000000000 +0100
++++ Pound-3.0.2/src/config.c	2022-04-05 13:03:00.802981794 +0200
+@@ -63,6 +63,19 @@
+     return res;
+ }
+ 
++static int mbedtls_rnd( void *rng_state, unsigned char *output, size_t len )
++{
++    size_t i;
++
++    if( rng_state != NULL )
++        rng_state  = NULL;
++
++    for( i = 0; i < len; ++i )
++        output[i] = rand();
++
++    return(0);
++}
++
+ static void
+ get_global(yaml_document_t *document, yaml_node_t *root)
+ {
+@@ -380,11 +393,11 @@
+     if(mbedtls_x509_crt_parse_file(&res->certificate, filename))
+         fatal("SNI: can't read certificate %s", filename);
+     mbedtls_pk_init(&res->key);
+-    if(mbedtls_pk_parse_keyfile(&res->key, filename, NULL))
++    if(mbedtls_pk_parse_keyfile(&res->key, filename, NULL, mbedtls_rnd, NULL))
+         fatal("SNI: can't read key %s", filename);
+     utarray_new(hosts, &regex_icd);
+     for(cur = &res->certificate; cur != NULL; cur = cur->next) {
+-        if(mbedtls_pk_check_pair(&cur->pk, &res->key))
++        if(mbedtls_pk_check_pair(&cur->pk, &res->key, mbedtls_rnd, NULL))
+             continue;
+         for(nd = &cur->subject; nd != NULL; nd = nd->next)
+             if(MBEDTLS_OID_CMP(MBEDTLS_OID_AT_CN, &nd->oid) == 0) {
+--- Pound-3.0.2/src/http.c~	2021-11-28 17:04:25.000000000 +0100
++++ Pound-3.0.2/src/http.c	2022-04-05 13:30:02.176298374 +0200
+@@ -476,6 +476,7 @@
+ 
+ typedef struct cookie {
+     mbedtls_ssl_context *fd;
++    mbedtls_net_context *ssl_fd;
+ }   COOKIE;
+ 
+ static size_t
+@@ -506,13 +507,11 @@
+ {
+     COOKIE  *c;
+     int     res;
+-    mbedtls_net_context *ssl_fd;
+ 
+     c = (COOKIE *)cv;
+     res = mbedtls_ssl_close_notify(c->fd);
+-    ssl_fd = c->fd->p_bio;
++    mbedtls_net_free(c->ssl_fd);
+     mbedtls_ssl_free(c->fd);
+-    mbedtls_net_free(ssl_fd);
+     return res;
+ }
+ 
+@@ -580,6 +579,7 @@
+                 crt_buf[0] = '\0';
+             /* for HTTP2: !strcmp(mbedtls_ssl_get_alpn_protocol(&ssl), "h2"), but we don't really need it */
+             c.fd = &ssl;
++            c.ssl_fd = &ssl_client;
+             cio.read = (cookie_read_function_t *)c_read;
+             cio.write = (cookie_write_function_t *)c_write;
+             cio.seek = NULL;

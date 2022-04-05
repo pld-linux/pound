@@ -6,19 +6,20 @@
 Summary:	Pound - reverse-proxy and load-balancer
 Summary(pl.UTF-8):	Pound - reverse-proxy i load-balancer
 Name:		pound
-Version:	3.0.1
-Release:	2
+Version:	3.0.2
+Release:	1
 License:	GPL v3
 Group:		Networking/Daemons
 Source0:	http://www.apsis.ch/pound/Pound-%{version}.tgz
-# Source0-md5:	4f14dee286f2325c53ea646b5323e3de
+# Source0-md5:	c0f5af4cd6aa184c00f4848ae1c4536a
 Source1:	%{name}.yaml
 Source2:	%{name}.init
 Source3:	%{name}.sysconfig
 Source5:	%{name}.tmpfiles
 Patch0:		tcmalloc.patch
 Patch1:		pound-man.patch
-URL:		http://www.apsis.ch/pound/
+Patch2:		mbedtls3.patch
+URL:		https://www.apsis.ch/pound.html
 BuildRequires:	cmake
 BuildRequires:	yaml-devel
 BuildRequires:	nanomsg-devel
@@ -61,6 +62,7 @@ swobodnego używania, kopiowania i rozdawania.
 %setup -q -n Pound-%{version}
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 install -d build
