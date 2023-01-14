@@ -1,3 +1,5 @@
+#
+# Conditional build:
 %bcond_without	tcmalloc	# tcmalloc allocator
 
 %ifarch x32
@@ -7,7 +9,7 @@ Summary:	Pound - reverse-proxy and load-balancer
 Summary(pl.UTF-8):	Pound - reverse-proxy i load-balancer
 Name:		pound
 Version:	3.0.2
-Release:	1
+Release:	2
 License:	GPL v3
 Group:		Networking/Daemons
 Source0:	http://www.apsis.ch/pound/Pound-%{version}.tgz
@@ -20,13 +22,14 @@ Patch0:		tcmalloc.patch
 Patch1:		pound-man.patch
 Patch2:		mbedtls3.patch
 URL:		https://www.apsis.ch/pound.html
-BuildRequires:	cmake
-BuildRequires:	yaml-devel
-BuildRequires:	nanomsg-devel
-BuildRequires:	mbedtls-devel
+BuildRequires:	cmake >= 3.0
 %{?with_tcmalloc:BuildRequires:	libtcmalloc-devel}
-BuildRequires:	pcre-devel
+BuildRequires:	mbedtls-devel
+BuildRequires:	nanomsg-devel
+BuildRequires:	pcre2-8-devel
+BuildRequires:	pcre2-posix-devel
 BuildRequires:	rpmbuild(macros) >= 1.644
+BuildRequires:	yaml-devel
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
@@ -67,7 +70,7 @@ swobodnego używania, kopiowania i rozdawania.
 %build
 install -d build
 cd build
-%cmake ../ \
+%cmake .. \
 	%{?with_tcmalloc:-DWANT_TCMALLOC:BOOL=ON}
 %{__make}
 
@@ -115,6 +118,6 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pound.yaml
 %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/%{name}
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
-%{_mandir}/man8/*
+%{_mandir}/man8/pound.8*
 %{systemdtmpfilesdir}/%{name}.conf
 %dir /var/run/%{name}
