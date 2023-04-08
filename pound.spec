@@ -1,5 +1,4 @@
-# NOTE: pound 3.x has been withdrawn; for pound 4.x (based on fork from pound 2.8)
-# see pound-4 branch - to be tested and merged
+# TODO: test and merge this branch to master
 #
 # Conditional build:
 %bcond_without	tcmalloc	# tcmalloc allocator
@@ -10,28 +9,24 @@
 Summary:	Pound - reverse-proxy and load-balancer
 Summary(pl.UTF-8):	Pound - odwrotne proxy i load-balancer
 Name:		pound
-Version:	3.0.2
-Release:	4
+Version:	4.6
+Release:	1
 License:	GPL v3
 Group:		Networking/Daemons
-Source0:	http://www.apsis.ch/pound/Pound-%{version}.tgz
-# Source0-md5:	c0f5af4cd6aa184c00f4848ae1c4536a
-Source1:	%{name}.yaml
+#Source0Download: https://github.com/graygnuorg/pound/releases
+Source0:	https://github.com/graygnuorg/pound/releases/download/v%{version}/pound-%{version}.tar.gz
+# Source0-md5:	4f77be83122a3e45cfd2487e4b4947ba
+Source1:	%{name}.cfg
 Source2:	%{name}.init
 Source3:	%{name}.sysconfig
 Source5:	%{name}.tmpfiles
-Patch0:		tcmalloc.patch
-Patch1:		pound-man.patch
-Patch2:		mbedtls3.patch
+Patch0:		%{name}-man.patch
+Patch1:		%{name}-hash-UL.patch
 URL:		https://github.com/graygnuorg/pound
-BuildRequires:	cmake >= 3.0
 %{?with_tcmalloc:BuildRequires:	libtcmalloc-devel}
-BuildRequires:	mbedtls-devel
-BuildRequires:	nanomsg-devel
-BuildRequires:	pcre2-8-devel
-BuildRequires:	pcre2-posix-devel
+BuildRequires:	openssl-devel >= 1.1
+BuildRequires:	pcre-devel >= 7.8
 BuildRequires:	rpmbuild(macros) >= 1.644
-BuildRequires:	yaml-devel
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
@@ -64,26 +59,32 @@ jest rozpowszechniany na licencji GPL - bez gwarancji, z możliwością
 swobodnego używania, kopiowania i rozdawania.
 
 %prep
-%setup -q -n Pound-%{version}
+%setup -q
 %patch -P0 -p1
 %patch -P1 -p1
-%patch -P2 -p1
 
 %build
-install -d build
-cd build
-%cmake .. \
-	%{?with_tcmalloc:-DWANT_TCMALLOC:BOOL=ON}
+%configure \
+	ac_cv_lib_nsl_gethostbyaddr=no \
+	ac_cv_lib_socket_socket=no \
+	--disable-hoard \
+	--enable-pcreposix \
+	--enable-tcmalloc%{!?with_tcmalloc:=no} \
+	--with-group=pound \
+	--with-maxbuf=6144 \
+	--with-owner=pound
+
 %{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man8,%{_sysconfdir},/etc/{sysconfig,rc.d/init.d}} \
+install -d $RPM_BUILD_ROOT{%{_sysconfdir},/etc/{sysconfig,rc.d/init.d}} \
 	$RPM_BUILD_ROOT/var/run/%{name} \
 	$RPM_BUILD_ROOT%{systemdtmpfilesdir}
 
-install -p build/pound $RPM_BUILD_ROOT%{_sbindir}
-cp -p man/pound.8  $RPM_BUILD_ROOT%{_mandir}/man8
+%{__make} install \
+	DESTDIR=$RPM_BUILD_ROOT
+
 cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}
 install -p %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
 cp -p %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/%{name}
@@ -114,12 +115,16 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc README.md
+%doc AUTHORS ChangeLog ChangeLog.apsis NEWS README THANKS
+%attr(755,root,root) %{_bindir}/poundctl
 %attr(755,root,root) %{_sbindir}/pound
+%{_datadir}/pound
 %dir %{_sysconfdir}
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pound.yaml
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pound.cfg
 %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/%{name}
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
+%{_mandir}/man5/poundctl.tmpl.5*
 %{_mandir}/man8/pound.8*
+%{_mandir}/man8/poundctl.8*
 %{systemdtmpfilesdir}/%{name}.conf
 %dir /var/run/%{name}
