@@ -1,0 +1,20 @@
+--- pound-4.6/src/svc.c.orig	2023-03-06 19:44:39.000000000 +0100
++++ pound-4.6/src/svc.c	2023-04-08 17:28:27.899930763 +0200
+@@ -31,7 +31,7 @@ session_hash (const SESSION *e)
+   char *k;
+ 
+   k = e->key;
+-  res = 2166136261;
++  res = 2166136261UL;
+   while (*k)
+     res = ((res ^ *k++) * 16777619) & 0xFFFFFFFF;
+   return res;
+@@ -526,7 +526,7 @@ hash_backend (BACKEND_HEAD *head, int ab
+   BACKEND *res, *tb;
+   int pri;
+ 
+-  hv = 2166136261;
++  hv = 2166136261UL;
+   while (*key)
+     hv = ((hv ^ *key++) * 16777619) & 0xFFFFFFFF;
+   pri = hv % abs_pri;

@@ -1,20 +1,11 @@
---- Pound-3.0.1/man/pound.8~	2021-08-23 17:31:52.000000000 +0200
-+++ Pound-3.0.1/man/pound.8	2021-10-25 23:01:19.549793482 +0200
-@@ -131,7 +131,7 @@
- will write its own pid into this file. Normally this is used for shell
- scripts that control starting and stopping of the daemon.
- Default:
--.I /var/run/pound.pid
-+.I /var/run/pound/pound.pid
- .PP
- One (or more) copies of
- .B Pound
-@@ -481,7 +481,7 @@
- .RE
+--- pound-4.6/doc/pound.8.orig	2023-03-07 21:07:58.000000000 +0100
++++ pound-4.6/doc/pound.8	2023-04-08 17:03:32.874696677 +0200
+@@ -2186,7 +2186,7 @@ End
+ .EE
  .SH FILES
  .TP
--\fI/var/run/pound.pid\fR
-+\fI/var/run/pound/pound.pid\fR
- this is where
- .B Pound
- will attempt to record its process id.
+-.B /var/run/pound.pid
++.B /var/run/pound/pound.pid
+ This is where
+ .B pound
+ will attempt to record its process id.  The exact location is

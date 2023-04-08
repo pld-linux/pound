@@ -30,7 +30,7 @@ fi
 
 configtest() {
 	local instance="$1"
-	pound -c -f /etc/pound/$instance.yaml > /dev/null
+	pound -c -f /etc/pound/$instance.cfg > /dev/null
 }
 
 # check if the $1 instance is up
@@ -93,7 +93,7 @@ start() {
 		PIDFILE=/var/run/pound/$instance.pid
 		start-stop-daemon --start \
 			--exec /usr/sbin/pound \
-			--pidfile $PIDFILE -- -v -f /etc/pound/$instance.yaml -p $PIDFILE
+			--pidfile $PIDFILE -- -v -f /etc/pound/$instance.cfg -p $PIDFILE
 		ret=$?
 
 		if [ $ret -eq 0 ]; then
