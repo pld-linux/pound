@@ -1,3 +1,5 @@
+# NOTE: pound 3.x has been withdrawn; for pound 4.x (based on fork from pound 2.8)
+# see pound-4 branch - to be tested and merged
 #
 # Conditional build:
 %bcond_without	tcmalloc	# tcmalloc allocator
@@ -21,7 +23,7 @@ Source5:	%{name}.tmpfiles
 Patch0:		tcmalloc.patch
 Patch1:		pound-man.patch
 Patch2:		mbedtls3.patch
-URL:		https://www.apsis.ch/pound.html
+URL:		https://github.com/graygnuorg/pound
 BuildRequires:	cmake >= 3.0
 %{?with_tcmalloc:BuildRequires:	libtcmalloc-devel}
 BuildRequires:	mbedtls-devel
