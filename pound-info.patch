@@ -1,0 +1,16 @@
+--- pound-4.16/doc/pound.texi.orig	2025-01-02 13:46:53.000000000 +0100
++++ pound-4.16/doc/pound.texi	2025-05-18 21:31:59.280221077 +0200
+@@ -35,10 +35,10 @@
+ @end macro
+ 
+ @ifinfo
+-@dircategory Network applications
++@dircategory Net utilities:
+ @direntry
+-* pound: (pound).        Light-weight proxy server.
+-* poundctl: (pound).     Pound proxy server runtime control.
++* pound: (pound).			Light-weight proxy server
++* poundctl: (pound).			Pound proxy server runtime control
+ @end direntry
+ @end ifinfo
+ @c %**end of header

@@ -9,24 +9,25 @@
 Summary:	Pound - reverse-proxy and load-balancer
 Summary(pl.UTF-8):	Pound - odwrotne proxy i load-balancer
 Name:		pound
-Version:	4.6
+Version:	4.16
 Release:	1
 License:	GPL v3
 Group:		Networking/Daemons
 #Source0Download: https://github.com/graygnuorg/pound/releases
 Source0:	https://github.com/graygnuorg/pound/releases/download/v%{version}/pound-%{version}.tar.gz
-# Source0-md5:	4f77be83122a3e45cfd2487e4b4947ba
+# Source0-md5:	b1b5a11e5480b611c5561125cab3600f
 Source1:	%{name}.cfg
 Source2:	%{name}.init
 Source3:	%{name}.sysconfig
 Source5:	%{name}.tmpfiles
 Patch0:		%{name}-man.patch
-Patch1:		%{name}-hash-UL.patch
+Patch1:		%{name}-info.patch
 URL:		https://github.com/graygnuorg/pound
 %{?with_tcmalloc:BuildRequires:	libtcmalloc-devel}
 BuildRequires:	openssl-devel >= 1.1
 BuildRequires:	pcre-devel >= 7.8
 BuildRequires:	rpmbuild(macros) >= 1.644
+BuildRequires:	texinfo
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
@@ -98,6 +99,7 @@ rm -rf $RPM_BUILD_ROOT
 %useradd -u 200 -d /var/lib/%{name} -g %{name} -c "Pound Daemon" %{name}
 
 %post
+[ ! -x /usr/sbin/fix-info-dir ] || /usr/sbin/fix-info-dir -c /usr/share/info > /dev/null 2>&1
 /sbin/chkconfig --add %{name}
 %service %{name} restart "Pound Daemon"
 
@@ -108,6 +110,7 @@ if [ "$1" = "0" ]; then
 fi
 
 %postun
+[ ! -x /usr/sbin/fix-info-dir ] || /usr/sbin/fix-info-dir -c /usr/share/info > /dev/null 2>&1
 if [ "$1" = "0" ]; then
 	%userremove %{name}
 	%groupremove %{name}
@@ -123,6 +126,7 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/pound.cfg
 %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/%{name}
 %attr(754,root,root) /etc/rc.d/init.d/%{name}
+%{_infodir}/pound.info*
 %{_mandir}/man5/poundctl.tmpl.5*
 %{_mandir}/man8/pound.8*
 %{_mandir}/man8/poundctl.8*
